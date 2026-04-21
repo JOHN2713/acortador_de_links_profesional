@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acortador de URLs - Profesional</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-link"></i>
+                <h1>URL<span>Short</span></h1>
+            </div>
+            <nav class="nav">
+                <a href="#" class="nav-link active">Inicio</a>
+                <a href="#" class="nav-link">Mis URLs</a>
+                <a href="#" class="nav-link">Estadísticas</a>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2 class="hero-title">Acorta tus URLs con<br><span class="gradient-text">Nombres Profesionales</span></h2>
+            <p class="hero-subtitle">Transforma tus enlaces largos en URLs cortas y memorables</p>
+        </section>
+
+        <!-- Main Form -->
+        <section class="form-section">
+            <div class="form-container">
+                <form id="urlForm" class="url-form">
+                    <div class="form-group">
+                        <label for="original_url">
+                            <i class="fas fa-globe"></i>
+                            URL Original
+                        </label>
+                        <input 
+                            type="url" 
+                            id="original_url" 
+                            name="original_url" 
+                            placeholder="https://teams.microsoft.com/l/meetup-join/..." 
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custom_name">
+                            <i class="fas fa-edit"></i>
+                            Nombre Personalizado (Opcional)
+                        </label>
+                        <div class="input-with-prefix">
+                            <span class="prefix">tudominio.com/</span>
+                            <input 
+                                type="text" 
+                                id="custom_name" 
+                                name="custom_name" 
+                                placeholder="capacitacion10amperseoweb" 
+                                pattern="[a-zA-Z0-9-_]+"
+                            >
+                        </div>
+                        <small class="input-hint">Solo letras, números, guiones y guiones bajos</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">
+                            <i class="fas fa-info-circle"></i>
+                            Descripción (Opcional)
+                        </label>
+                        <input 
+                            type="text" 
+                            id="description" 
+                            name="description" 
+                            placeholder="Capacitación SEO Web - 10 AM"
+                        >
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-scissors"></i>
+                        Acortar URL
+                    </button>
+                </form>
+
+                <!-- Success Message -->
+                <div id="successMessage" class="success-message" style="display: none;">
+                    <div class="success-header">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>¡URL Acortada Exitosamente!</h3>
+                    </div>
+                    <div class="url-result">
+                        <div class="result-label">Tu nueva URL:</div>
+                        <div class="result-url-container">
+                            <input type="text" id="shortUrl" class="result-url" readonly>
+                            <button class="btn-copy" onclick="copyToClipboard()">
+                                <i class="fas fa-copy"></i>
+                                Copiar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="url-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Creada: <span id="createdDate"></span></span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-mouse-pointer"></i>
+                            <span>Clicks: <span id="clickCount">0</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMessage" class="error-message" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="errorText"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <h3 class="features-title">Características</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h4>Rápido y Fácil</h4>
+                    <p>Acorta tus URLs en segundos con solo unos clicks</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4>Seguimiento</h4>
+                    <p>Monitorea cuántas veces se ha usado tu enlace</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Seguro</h4>
+                    <p>Tus datos están protegidos y seguros</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h4>Personalizable</h4>
+                    <p>Crea URLs con nombres profesionales y memorables</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 URLShort. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
