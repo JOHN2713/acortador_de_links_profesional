@@ -26,11 +26,18 @@
 
         <!-- Page Title -->
         <section class="page-header">
-            <h2 class="page-title">
-                <i class="fas fa-chart-line"></i>
-                Estadísticas Generales
-            </h2>
-            <p class="page-subtitle">Análisis completo de tus URLs</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                    <h2 class="page-title">
+                        <i class="fas fa-chart-line"></i>
+                        Estadísticas Generales
+                    </h2>
+                    <p class="page-subtitle">Análisis completo de tus URLs</p>
+                </div>
+                <button class="btn btn-refresh" onclick="loadStatistics()" title="Refrescar estadísticas">
+                    <i class="fas fa-sync-alt"></i> Refrescar
+                </button>
+            </div>
         </section>
 
         <!-- Main Stats -->

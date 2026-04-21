@@ -1,6 +1,11 @@
 // Cargar estadísticas al iniciar
 document.addEventListener('DOMContentLoaded', function() {
     loadStatistics();
+    
+    // Auto-actualizar cada 10 segundos
+    setInterval(() => {
+        loadStatistics();
+    }, 10000);
 });
 
 // Cargar todas las estadísticas

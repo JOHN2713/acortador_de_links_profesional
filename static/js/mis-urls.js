@@ -6,6 +6,11 @@ let deleteUrlId = null;
 document.addEventListener('DOMContentLoaded', function() {
     loadUrls();
     setupEventListeners();
+    
+    // Auto-actualizar cada 10 segundos para reflejar nuevos clicks
+    setInterval(() => {
+        loadUrls();
+    }, 10000);
 });
 
 // Configurar event listeners
@@ -150,11 +155,34 @@ async function copyUrl(shortCode) {
     const fullUrl = `${baseUrl}/${shortCode}`;
     
     try {
-        await navigator.clipboard.writeText(fullUrl);
-        showToast('✓ URL copiada al portapapeles', 'success');
+        // Intentar con Clipboard API moderno
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(fullUrl);
+            showToast('✓ URL copiada al portapapeles', 'success');
+        } else {
+            // Fallback para navegadores antiguos
+            const textArea = document.createElement('textarea');
+            textArea.value = fullUrl;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast('✓ URL copiada al portapapeles', 'success');
+            } catch (err) {
+                console.error('Fallback: Error al copiar', err);
+                showToast('Error al copiar URL. Cópiala manualmente: ' + fullUrl, 'error');
+            }
+            
+            document.body.removeChild(textArea);
+        }
     } catch (error) {
         console.error('Error al copiar:', error);
-        showToast('Error al copiar URL', 'error');
+        // Mostrar la URL para copiar manualmente
+        prompt('Copia esta URL manualmente:', fullUrl);
     }
 }
 

@@ -135,9 +135,12 @@ def redirect_to_url(short_code):
         
         # Insertar en analytics (el trigger actualizará el contador automáticamente)
         try:
-            supabase.table('url_analytics').insert(analytics_data).execute()
+            analytics_result = supabase.table('url_analytics').insert(analytics_data).execute()
+            print(f"✅ Click registrado para {short_code} - URL ID: {url_data['id']}")
+            print(f"   IP: {request.remote_addr}")
         except Exception as e:
-            print(f"⚠️  Error al registrar analytics: {e}")
+            print(f"❌ Error al registrar analytics: {e}")
+            print(f"   Datos: {analytics_data}")
             # No fallar la redirección si hay error en analytics
         
         # Redirigir a la URL original
