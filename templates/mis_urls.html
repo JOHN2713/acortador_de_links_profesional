@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis URLs - Acortador Profesional</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-link"></i>
+                <h1>URL<span>Short</span></h1>
+            </div>
+            <nav class="nav">
+                <a href="/" class="nav-link">Inicio</a>
+                <a href="/mis-urls" class="nav-link active">Mis URLs</a>
+                <a href="/estadisticas" class="nav-link">Estadísticas</a>
+            </nav>
+        </header>
+
+        <!-- Page Title -->
+        <section class="page-header">
+            <h2 class="page-title">
+                <i class="fas fa-list"></i>
+                Mis URLs Acortadas
+            </h2>
+            <p class="page-subtitle">Gestiona y monitorea todas tus URLs</p>
+        </section>
+
+        <!-- Stats Overview -->
+        <section class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-link"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="totalUrls">0</h3>
+                    <p>URLs Totales</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-mouse-pointer"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="totalClicks">0</h3>
+                    <p>Clicks Totales</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="todayClicks">0</h3>
+                    <p>Clicks Hoy</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="topUrl">-</h3>
+                    <p>URL Más Popular</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search and Filter -->
+        <section class="search-section">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Buscar por nombre, URL o descripción...">
+            </div>
+            <div class="filter-container">
+                <select id="sortSelect" class="filter-select">
+                    <option value="recent">Más Recientes</option>
+                    <option value="oldest">Más Antiguas</option>
+                    <option value="popular">Más Populares</option>
+                    <option value="name">Por Nombre (A-Z)</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- URLs Table -->
+        <section class="urls-section">
+            <div id="loadingSpinner" class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando URLs...</p>
+            </div>
+            
+            <div id="urlsContainer" style="display: none;">
+                <div class="urls-table">
+                    <div class="table-header">
+                        <div class="col-code">Código</div>
+                        <div class="col-original">URL Original</div>
+                        <div class="col-clicks">Clicks</div>
+                        <div class="col-date">Fecha</div>
+                        <div class="col-actions">Acciones</div>
+                    </div>
+                    <div id="urlsList" class="table-body">
+                        <!-- URLs will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-inbox"></i>
+                <h3>No hay URLs todavía</h3>
+                <p>Comienza acortando tu primera URL</p>
+                <a href="/" class="btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Crear URL
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 URLShort. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h3>
+            <p>¿Estás seguro de que deseas eliminar esta URL? Esta acción no se puede deshacer.</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeDeleteModal()">Cancelar</button>
+                <button class="btn-delete" onclick="confirmDelete()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/mis-urls.js') }}"></script>
+</body>
+</html>

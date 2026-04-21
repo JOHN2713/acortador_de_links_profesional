@@ -201,6 +201,56 @@ def get_all_urls():
         print(f"❌ Error en /api/urls: {str(e)}")
         return jsonify({'error': 'Error al obtener URLs'}), 500
 
+@app.route('/mis-urls')
+def mis_urls():
+    """Página para ver todas las URLs creadas"""
+    return render_template('mis_urls.html')
+
+@app.route('/estadisticas')
+def estadisticas():
+    """Página de estadísticas generales"""
+    return render_template('estadisticas.html')
+
+@app.route('/estadisticas/<short_code>')
+def estadisticas_url(short_code):
+    """Página de estadísticas de una URL específica"""
+    try:
+        if not supabase:
+            return "Servicio no disponible", 503
+        
+        # Buscar la URL
+        result = supabase.table('urls').select('*').eq('short_code', short_code).execute()
+        
+        if not result.data:
+            return render_template('404.html', short_code=short_code), 404
+        
+        return render_template('estadisticas.html', url_data=result.data[0])
+        
+    except Exception as e:
+        print(f"❌ Error en /estadisticas/{short_code}: {str(e)}")
+        return "Error al cargar estadísticas", 500
+
+@app.route('/api/urls/<url_id>', methods=['DELETE'])
+def delete_url(url_id):
+    """Eliminar una URL (marcar como inactiva)"""
+    try:
+        if not supabase:
+            return jsonify({'error': 'Servicio no disponible'}), 503
+        
+        # Marcar como inactiva en lugar de eliminar
+        result = supabase.table('urls').update({
+            'is_active': False
+        }).eq('id', url_id).execute()
+        
+        if result.data:
+            return jsonify({'success': True, 'message': 'URL eliminada'}), 200
+        else:
+            return jsonify({'error': 'URL no encontrada'}), 404
+        
+    except Exception as e:
+        print(f"❌ Error al eliminar URL: {str(e)}")
+        return jsonify({'error': 'Error al eliminar URL'}), 500
+
 if __name__ == '__main__':
     # Modo desarrollo
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas - Acortador Profesional</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-link"></i>
+                <h1>URL<span>Short</span></h1>
+            </div>
+            <nav class="nav">
+                <a href="/" class="nav-link">Inicio</a>
+                <a href="/mis-urls" class="nav-link">Mis URLs</a>
+                <a href="/estadisticas" class="nav-link active">Estadísticas</a>
+            </nav>
+        </header>
+
+        <!-- Page Title -->
+        <section class="page-header">
+            <h2 class="page-title">
+                <i class="fas fa-chart-line"></i>
+                Estadísticas Generales
+            </h2>
+            <p class="page-subtitle">Análisis completo de tus URLs</p>
+        </section>
+
+        <!-- Main Stats -->
+        <section class="main-stats">
+            <div class="big-stat-card">
+                <div class="big-stat-icon" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                    <i class="fas fa-link"></i>
+                </div>
+                <div class="big-stat-content">
+                    <h2 id="totalUrls">0</h2>
+                    <p>URLs Creadas</p>
+                    <small>Todas las URLs acortadas</small>
+                </div>
+            </div>
+            <div class="big-stat-card">
+                <div class="big-stat-icon" style="background: linear-gradient(135deg, #ec4899, #db2777);">
+                    <i class="fas fa-mouse-pointer"></i>
+                </div>
+                <div class="big-stat-content">
+                    <h2 id="totalClicks">0</h2>
+                    <p>Clicks Totales</p>
+                    <small>Redirecciones realizadas</small>
+                </div>
+            </div>
+            <div class="big-stat-card">
+                <div class="big-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="big-stat-content">
+                    <h2 id="avgClicks">0</h2>
+                    <p>Promedio de Clicks</p>
+                    <small>Por URL</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top URLs -->
+        <section class="top-urls-section">
+            <div class="section-header">
+                <h3><i class="fas fa-trophy"></i> URLs Más Populares</h3>
+            </div>
+            <div id="topUrlsList" class="top-urls-list">
+                <!-- Top URLs will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="activity-section">
+            <div class="section-header">
+                <h3><i class="fas fa-history"></i> Actividad Reciente</h3>
+            </div>
+            <div id="recentActivity" class="activity-list">
+                <!-- Recent clicks will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Performance Metrics -->
+        <section class="metrics-section">
+            <div class="metric-card">
+                <h4><i class="fas fa-calendar-week"></i> Esta Semana</h4>
+                <div class="metric-value">
+                    <span id="weekClicks">0</span>
+                    <small>clicks</small>
+                </div>
+            </div>
+            <div class="metric-card">
+                <h4><i class="fas fa-calendar-day"></i> Hoy</h4>
+                <div class="metric-value">
+                    <span id="todayClicks">0</span>
+                    <small>clicks</small>
+                </div>
+            </div>
+            <div class="metric-card">
+                <h4><i class="fas fa-fire"></i> Mejor Día</h4>
+                <div class="metric-value">
+                    <span id="bestDay">-</span>
+                    <small id="bestDayClicks">0 clicks</small>
+                </div>
+            </div>
+            <div class="metric-card">
+                <h4><i class="fas fa-clock"></i> Última Hora</h4>
+                <div class="metric-value">
+                    <span id="lastHourClicks">0</span>
+                    <small>clicks</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 URLShort. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/estadisticas.js') }}"></script>
+</body>
+</html>
