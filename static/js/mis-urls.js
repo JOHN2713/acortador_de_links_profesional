@@ -98,19 +98,8 @@ function updateStats(urls) {
     const totalUrls = urls.length;
     const totalClicks = urls.reduce((sum, url) => sum + (url.clicks || 0), 0);
     
-    // URLs de hoy
-    const today = new Date().toDateString();
-    const todayUrls = urls.filter(url => new Date(url.created_at).toDateString() === today);
-    
-    // URL más popular
-    const topUrl = urls.reduce((max, url) => 
-        (url.clicks || 0) > (max.clicks || 0) ? url : max
-    , urls[0] || {});
-    
     document.getElementById('totalUrls').textContent = totalUrls;
     document.getElementById('totalClicks').textContent = totalClicks;
-    document.getElementById('todayClicks').textContent = todayUrls.length;
-    document.getElementById('topUrl').textContent = topUrl.short_code || '-';
 }
 
 // Filtrar URLs por búsqueda
