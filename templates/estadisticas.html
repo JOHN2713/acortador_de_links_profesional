@@ -104,9 +104,37 @@
             </div>
             <div class="analytics-controls">
                 <input type="text" id="analyticsSearch" placeholder="Buscar por URL, IP o dispositivo..." class="search-input">
-                <select id="analyticsFilter" class="filter-select">
-                    <option value="all">Todas las URLs</option>
-                </select>
+                <div class="analytics-filters-row">
+                    <div class="filter-group">
+                        <label>Filtrar por URL:</label>
+                        <select id="analyticsFilter" class="filter-select">
+                            <option value="all">Todas las URLs</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Tipo de Dispositivo:</label>
+                        <select id="deviceFilter" class="filter-select">
+                            <option value="all">Todos</option>
+                            <option value="desktop">Desktop</option>
+                            <option value="mobile">Móvil</option>
+                            <option value="tablet">Tablet</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Fecha:</label>
+                        <select id="dateFilter" class="filter-select">
+                            <option value="all">Todas las fechas</option>
+                            <option value="today">Hoy</option>
+                            <option value="yesterday">Ayer</option>
+                            <option value="week">Última semana</option>
+                            <option value="month">Último mes</option>
+                        </select>
+                    </div>
+                    <button class="clear-filters-btn" onclick="clearAllFilters()" title="Limpiar filtros">
+                        <i class="fas fa-times-circle"></i> Limpiar
+                    </button>
+                </div>
+                <div id="activeFilters" style="display: none; margin-top: 0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;"></div>
             </div>
             <div id="analyticsTableContainer" class="analytics-table-container">
                 <table class="analytics-table">

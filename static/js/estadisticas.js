@@ -9,9 +9,11 @@ document.addEventListener('DOMContentLoaded', function() {
         loadAnalyticsTable();
     }, 10000);
     
-    // Event listeners para búsqueda y filtro
+    // Event listeners para búsqueda y filtros
     document.getElementById('analyticsSearch').addEventListener('input', filterAnalyticsTable);
     document.getElementById('analyticsFilter').addEventListener('change', filterAnalyticsTable);
+    document.getElementById('deviceFilter').addEventListener('change', filterAnalyticsTable);
+    document.getElementById('dateFilter').addEventListener('change', filterAnalyticsTable);
 });
 
 // Cargar todas las estadísticas
@@ -367,6 +369,8 @@ function parseUserAgent(userAgent) {
 function filterAnalyticsTable() {
     const searchTerm = document.getElementById('analyticsSearch').value.toLowerCase();
     const urlFilter = document.getElementById('analyticsFilter').value;
+    const deviceFilter = document.getElementById('deviceFilter').value;
+    const dateFilter = document.getElementById('dateFilter').value;
     
     let filtered = allAnalytics;
     
@@ -375,6 +379,50 @@ function filterAnalyticsTable() {
         filtered = filtered.filter(record => 
             record.urls?.short_code === urlFilter
         );
+    }
+    
+    // Filtrar por dispositivo
+    if (deviceFilter !== 'all') {
+        filtered = filtered.filter(record => {
+            const ua = (record.user_agent || '').toLowerCase();
+            if (deviceFilter === 'mobile') {
+                return ua.includes('mobile') && !ua.includes('tablet');
+            } else if (deviceFilter === 'tablet') {
+                return ua.includes('tablet') || ua.includes('ipad');
+            } else if (deviceFilter === 'desktop') {
+                return !ua.includes('mobile') && !ua.includes('tablet');
+            }
+            return true;
+        });
+    }
+    
+    // Filtrar por fecha
+    if (dateFilter !== 'all') {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        filtered = filtered.filter(record => {
+            const clickDate = new Date(record.clicked_at);
+            
+            switch(dateFilter) {
+                case 'today':
+                    return clickDate >= today;
+                case 'yesterday':
+                    const yesterday = new Date(today);
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    return clickDate >= yesterday && clickDate < today;
+                case 'week':
+                    const weekAgo = new Date(today);
+                    weekAgo.setDate(weekAgo.getDate() - 7);
+                    return clickDate >= weekAgo;
+                case 'month':
+                    const monthAgo = new Date(today);
+                    monthAgo.setMonth(monthAgo.getMonth() - 1);
+                    return clickDate >= monthAgo;
+                default:
+                    return true;
+            }
+        });
     }
     
     // Filtrar por búsqueda
@@ -418,4 +466,13 @@ function showAnalyticsError() {
             </td>
         </tr>
     `;
+}
+
+// Limpiar todos los filtros
+function clearAllFilters() {
+    document.getElementById('analyticsSearch').value = '';
+    document.getElementById('analyticsFilter').value = 'all';
+    document.getElementById('deviceFilter').value = 'all';
+    document.getElementById('dateFilter').value = 'all';
+    filterAnalyticsTable();
 }
