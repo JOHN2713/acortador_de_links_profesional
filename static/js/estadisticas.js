@@ -1,11 +1,17 @@
 // Cargar estadísticas al iniciar
 document.addEventListener('DOMContentLoaded', function() {
     loadStatistics();
+    loadAnalyticsTable();
     
     // Auto-actualizar cada 10 segundos
     setInterval(() => {
         loadStatistics();
+        loadAnalyticsTable();
     }, 10000);
+    
+    // Event listeners para búsqueda y filtro
+    document.getElementById('analyticsSearch').addEventListener('input', filterAnalyticsTable);
+    document.getElementById('analyticsFilter').addEventListener('change', filterAnalyticsTable);
 });
 
 // Cargar todas las estadísticas
@@ -227,4 +233,189 @@ function formatTimeAgo(dateString) {
         month: 'short', 
         day: 'numeric' 
     });
+}
+
+// ============================================
+// TABLA DE ANALYTICS DETALLADA
+// ============================================
+
+let allAnalytics = [];
+
+// Cargar tabla de analytics
+async function loadAnalyticsTable() {
+    try {
+        const response = await fetch('/api/analytics');
+        const data = await response.json();
+        
+        if (response.ok && data.analytics) {
+            allAnalytics = data.analytics;
+            displayAnalyticsTable(allAnalytics);
+            populateUrlFilter(allAnalytics);
+        } else {
+            showAnalyticsError();
+        }
+    } catch (error) {
+        console.error('Error al cargar analytics:', error);
+        showAnalyticsError();
+    }
+}
+
+// Mostrar datos en la tabla
+function displayAnalyticsTable(analytics) {
+    const tbody = document.getElementById('analyticsTableBody');
+    
+    if (analytics.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 40px;">
+                    <i class="fas fa-inbox" style="font-size: 48px; color: #64748b; margin-bottom: 10px;"></i>
+                    <p style="color: #94a3b8; font-size: 16px;">No hay registros de clicks aún</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = analytics.map(record => {
+        const date = new Date(record.clicked_at);
+        const shortCode = record.urls?.short_code || 'Desconocido';
+        const device = parseUserAgent(record.user_agent);
+        
+        return `
+            <tr>
+                <td>
+                    <div class="analytics-url-badge">
+                        <i class="fas fa-link"></i>
+                        ${shortCode}
+                    </div>
+                </td>
+                <td>
+                    <div class="analytics-time">
+                        <strong>${date.toLocaleDateString('es-ES', { 
+                            day: '2-digit', 
+                            month: 'short', 
+                            year: 'numeric' 
+                        })}</strong>
+                        ${date.toLocaleTimeString('es-ES', { 
+                            hour: '2-digit', 
+                            minute: '2-digit',
+                            second: '2-digit'
+                        })}
+                    </div>
+                </td>
+                <td>
+                    <span class="analytics-ip">${record.ip_address || 'No disponible'}</span>
+                </td>
+                <td>
+                    <div class="analytics-device">
+                        <i class="${device.icon}"></i>
+                        ${device.name}
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Parsear User Agent para obtener info del dispositivo
+function parseUserAgent(userAgent) {
+    if (!userAgent) {
+        return { name: 'Desconocido', icon: 'fas fa-question-circle' };
+    }
+    
+    const ua = userAgent.toLowerCase();
+    
+    // Detectar SO
+    let os = '';
+    if (ua.includes('windows')) os = 'Windows';
+    else if (ua.includes('mac')) os = 'macOS';
+    else if (ua.includes('linux')) os = 'Linux';
+    else if (ua.includes('android')) os = 'Android';
+    else if (ua.includes('iphone') || ua.includes('ipad')) os = 'iOS';
+    
+    // Detectar navegador
+    let browser = '';
+    if (ua.includes('edg')) browser = 'Edge';
+    else if (ua.includes('chrome')) browser = 'Chrome';
+    else if (ua.includes('firefox')) browser = 'Firefox';
+    else if (ua.includes('safari')) browser = 'Safari';
+    else if (ua.includes('opera')) browser = 'Opera';
+    
+    // Detectar tipo de dispositivo
+    let icon = 'fas fa-desktop';
+    let deviceType = 'Desktop';
+    
+    if (ua.includes('mobile')) {
+        icon = 'fas fa-mobile-alt';
+        deviceType = 'Móvil';
+    } else if (ua.includes('tablet') || ua.includes('ipad')) {
+        icon = 'fas fa-tablet-alt';
+        deviceType = 'Tablet';
+    }
+    
+    const parts = [deviceType];
+    if (os) parts.push(os);
+    if (browser) parts.push(browser);
+    
+    return {
+        name: parts.join(' • '),
+        icon: icon
+    };
+}
+
+// Filtrar tabla
+function filterAnalyticsTable() {
+    const searchTerm = document.getElementById('analyticsSearch').value.toLowerCase();
+    const urlFilter = document.getElementById('analyticsFilter').value;
+    
+    let filtered = allAnalytics;
+    
+    // Filtrar por URL
+    if (urlFilter !== 'all') {
+        filtered = filtered.filter(record => 
+            record.urls?.short_code === urlFilter
+        );
+    }
+    
+    // Filtrar por búsqueda
+    if (searchTerm) {
+        filtered = filtered.filter(record => {
+            const shortCode = (record.urls?.short_code || '').toLowerCase();
+            const ip = (record.ip_address || '').toLowerCase();
+            const userAgent = (record.user_agent || '').toLowerCase();
+            
+            return shortCode.includes(searchTerm) || 
+                   ip.includes(searchTerm) || 
+                   userAgent.includes(searchTerm);
+        });
+    }
+    
+    displayAnalyticsTable(filtered);
+}
+
+// Poblar filtro de URLs
+function populateUrlFilter(analytics) {
+    const filter = document.getElementById('analyticsFilter');
+    
+    // Obtener URLs únicas
+    const uniqueUrls = [...new Set(analytics.map(a => a.urls?.short_code).filter(Boolean))];
+    
+    // Limpiar y agregar opciones
+    filter.innerHTML = '<option value="all">Todas las URLs</option>';
+    uniqueUrls.forEach(shortCode => {
+        filter.innerHTML += `<option value="${shortCode}">${shortCode}</option>`;
+    });
+}
+
+// Mostrar error
+function showAnalyticsError() {
+    const tbody = document.getElementById('analyticsTableBody');
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="4" style="text-align: center; padding: 40px;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #ef4444; margin-bottom: 10px;"></i>
+                <p style="color: #94a3b8; font-size: 16px;">Error al cargar los registros</p>
+            </td>
+        </tr>
+    `;
 }

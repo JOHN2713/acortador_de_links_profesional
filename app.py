@@ -204,6 +204,26 @@ def get_all_urls():
         print(f"❌ Error en /api/urls: {str(e)}")
         return jsonify({'error': 'Error al obtener URLs'}), 500
 
+@app.route('/api/analytics')
+def get_all_analytics():
+    """Obtener todos los clicks detallados con información de URLs"""
+    try:
+        if not supabase:
+            return jsonify({'error': 'Servicio no disponible'}), 503
+        
+        # Obtener analytics con información de la URL asociada
+        analytics = supabase.table('url_analytics').select('*, urls(short_code, original_url, description)').order('clicked_at', desc=True).limit(200).execute()
+        
+        return jsonify({
+            'success': True,
+            'analytics': analytics.data,
+            'count': len(analytics.data)
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error en /api/analytics: {str(e)}")
+        return jsonify({'error': 'Error al obtener analytics'}), 500
+
 @app.route('/mis-urls')
 def mis_urls():
     """Página para ver todas las URLs creadas"""
